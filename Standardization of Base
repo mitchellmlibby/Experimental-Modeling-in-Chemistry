@@ -1,0 +1,53 @@
+#Procedure of Acid-Base Standardization 
+
+
+#Parameters 
+number_of_replicates <- 4
+number_of_observations <- 6
+molarmass_titrant <- 204.22
+species <- "KHP"
+smallest_sigfig_of_glassware <- 4
+
+#Functions 
+
+#significant figures
+sigfig_clean <- function(x) {
+  signif(x, digits = smallest_sigfig_of_glassware)
+}
+
+sd_clean <- function(x){
+  signif(sd(x), digits = smallest_sigfig_of_glassware)
+}
+
+relative_sd <- function(x){
+  signif((sd(x)*100)/(abs(mean(x))), digits = 2)
+}
+
+#Vector Conversions of Standardization Calcualtion 
+grams_titrant_replications <- c(0.5103, 0.5136, 0.5125, 0.5163) #concatenates - measured masses into a vector 
+liters_titrant_replications <- c(0.02420, 0.02590, 0.02520, 0.02520) #concatenates - measured liters used in titration into a vector 
+moles_replications <- sigfig_clean(c(grams_titrant_replications / molarmass_titrant)) #concatenates - grams of replicants divided by their molar mass
+concentrations_M_replicates <- sigfig_clean(c(moles_replications/liters_titrant_replications))  #concatenates - grams of replicants divided by their molar mass
+
+Standardized_Concentration <- sigfig_clean(sum(concentrations_M_replicates / number_of_replicates))
+Standardized_Deviation <- sd_clean(concentrations_M_replicates)
+Relative_Standardized_Deviation <- relative_sd(concentrations_M_replicates)
+
+Standardized_Concentration
+Standardized_Deviation
+Relative_Standardized_Deviation
+
+#Matrix Conversions of Standardization Calcualtion 
+Standardization_Matrix <- matrix(nrow = number_of_replicates, ncol = number_of_observations)
+Titrant_data <- c("species","molarmass","grams", "liters", "moles", "concentrations")
+colnames(Standardization_Matrix) <- Titrant_data
+row.names(Standardization_Matrix) <- c(1:number_of_replicates)
+Standardization_Matrix[,1] <- species
+Standardization_Matrix[,2] <- molarmass_titrant
+Standardization_Matrix[,3] <- grams_titrant_replications
+Standardization_Matrix[,4] <- liters_titrant_replications
+Standardization_Matrix[,5] <- moles_replications
+Standardization_Matrix[,6] <- concentrations_M_replicates
+Standardization_Matrix
+
+       
